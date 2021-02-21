@@ -75,6 +75,12 @@ namespace UnityEngine.UI
             base.OnEnable();
             if (graphic != null)
             {
+                MaskableGraphic maskableGraphic = graphic as MaskableGraphic;
+                if (maskableGraphic != null)
+                {
+                    maskableGraphic.SetMask(this);
+                }
+
                 graphic.canvasRenderer.hasPopInstruction = true;
                 graphic.SetMaterialDirty();
             }

@@ -28,6 +28,9 @@ namespace UnityEngine.UI
         private bool m_Maskable = true;
 
         [NonSerialized]
+        private Mask m_Mask;
+
+        [NonSerialized]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         [Obsolete("Not used anymore.", true)]
         protected bool m_IncludeForMasking = false;
@@ -99,8 +102,7 @@ namespace UnityEngine.UI
             // if we have a enabled Mask component then it will
             // generate the mask material. This is an optimisation
             // it adds some coupling between components though :(
-            Mask maskComponent = GetComponent<Mask>();
-            if (m_StencilValue > 0 && (maskComponent == null || !maskComponent.IsActive()))
+            if (m_StencilValue > 0 && (m_Mask == null || !m_Mask.IsActive()))
             {
                 var maskMat = StencilMaterial.Add(toUse, (1 << m_StencilValue) - 1, StencilOp.Keep, CompareFunction.Equal, ColorWriteMask.All, (1 << m_StencilValue) - 1, 0);
                 StencilMaterial.Remove(m_MaskMaterial);
@@ -141,6 +143,16 @@ namespace UnityEngine.UI
                 canvasRenderer.DisableRectClipping();
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            if (m_Mask == null)
+            {
+                m_Mask = GetComponent<Mask>();
+            }
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -148,7 +160,7 @@ namespace UnityEngine.UI
             UpdateClipParent();
             SetMaterialDirty();
 
-            if (GetComponent<Mask>() != null)
+            if (m_Mask != null)
             {
                 MaskUtilities.NotifyStencilStateChanged(this);
             }
@@ -163,7 +175,7 @@ namespace UnityEngine.UI
             StencilMaterial.Remove(m_MaskMaterial);
             m_MaskMaterial = null;
 
-            if (GetComponent<Mask>() != null)
+            if (m_Mask != null)
             {
                 MaskUtilities.NotifyStencilStateChanged(this);
             }
@@ -263,6 +275,11 @@ namespace UnityEngine.UI
             m_MaskMaterial = null;
             m_ShouldRecalculateStencil = true;
             SetMaterialDirty();
+        }
+
+        internal void SetMask(Mask mask)
+        {
+            m_Mask = mask;
         }
     }
 }
