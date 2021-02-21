@@ -1,5 +1,9 @@
 # README #
 
+## Change Logs ##
+* [2018.4] Skip redundant finding root canvas for MaskableGraphic
+* [2018.4] Removing GetComponent calls from MaskableGraphic
+
 This document details how to get it up and running on your computer and start modifying the code!
 
 ### What license is the UI system shipped under? ###
